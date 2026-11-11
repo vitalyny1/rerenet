@@ -1,84 +1,83 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ReReNet — Realtor Referral Exchange</title>
-<meta name="description" content="Find Realtor-to-Realtor referral opportunities by ZIP code and distance.">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReReNet — Realtor Referral Network</title>
+<meta name="description" content="Find and share real estate referral opportunities by ZIP code and distance.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
-:root{--green:#16834b;--green-dark:#10683b;--mint:#e9f5ed;--ink:#202923;--muted:#66736b;--line:#dce5de;--paper:#fff;--bg:#f4f7f4}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Arial,Helvetica,sans-serif}
-header{background:#fff;border-bottom:1px solid var(--line)}.top{max-width:1180px;margin:auto;padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{font-size:25px;font-weight:800;letter-spacing:-1px;color:var(--green-dark);text-decoration:none}.brand span{color:#27352c}
-nav{display:flex;align-items:center;gap:22px}nav a{color:#35433a;text-decoration:none;font-weight:600}nav a:hover{color:var(--green)}
-.navbutton,.primary{background:var(--green);color:#fff!important;border:0;border-radius:7px;padding:10px 16px;text-decoration:none;font-weight:700;cursor:pointer}.navbutton:hover,.primary:hover{background:var(--green-dark)}
-main{max-width:1180px;margin:28px auto;padding:0 22px}
-.intro{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px}.intro h1{font-size:30px;line-height:1.15;margin:0 0 7px;letter-spacing:-.7px}.intro p{margin:0;color:var(--muted)}
-.demo{background:#fff8df;border:1px solid #f0df9f;border-radius:7px;padding:9px 12px;color:#725b17;font-size:13px}
-.search{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:12px;align-items:end;box-shadow:0 2px 8px #183b2410}
-label{display:block;font-size:12px;font-weight:700;color:#536158;margin-bottom:5px}input,select{width:100%;height:41px;border:1px solid #cfdad1;border-radius:6px;padding:0 11px;background:#fff;color:var(--ink);font:inherit}
-.search button{height:41px}
-.content{display:grid;grid-template-columns:1.08fr .92fr;gap:17px;margin-top:17px;align-items:stretch}
-.panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.panelhead{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.panelhead h2{font-size:17px;margin:0}.count{font-size:12px;color:var(--muted)}
-.cards{padding:0 17px}.item{padding:16px 0;border-bottom:1px solid #edf1ed}.item:last-child{border-bottom:0}.itemtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.kind{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--green-dark);font-weight:800}.item h3{font-size:16px;margin:4px 0}.item p{color:var(--muted);margin:5px 0 10px;font-size:13px}.meta{display:flex;gap:12px;flex-wrap:wrap;color:#5d6b61;font-size:12px}.tag{background:var(--mint);color:var(--green-dark);padding:4px 8px;border-radius:20px;font-weight:700;font-size:11px;white-space:nowrap}
-.map{min-height:500px;position:relative;background-color:#e9eee9;background-image:linear-gradient(28deg,transparent 46%,#fff 47%,#fff 49%,transparent 50%),linear-gradient(112deg,transparent 44%,#fff 45%,#fff 47%,transparent 48%),linear-gradient(0deg,transparent 48%,#d7e1d8 49%,#d7e1d8 50%,transparent 51%);background-size:180px 130px,220px 170px,100% 90px}
-.map:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 115px,#fff9 116px 120px,transparent 121px 230px);pointer-events:none}
-.maplabel{position:absolute;top:15px;left:15px;background:#fff;padding:7px 10px;border-radius:6px;font-size:12px;color:#59665d;box-shadow:0 1px 5px #0001}
-.pin{position:absolute;width:35px;height:35px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--green);border:3px solid #fff;box-shadow:0 2px 7px #0003;display:grid;place-items:center}
-.pin b{transform:rotate(45deg);color:#fff;font-size:12px}.p1{top:28%;left:28%}.p2{top:47%;left:59%}.p3{top:66%;left:38%}.p4{top:23%;left:73%}
-.mapnote{position:absolute;bottom:13px;left:13px;right:13px;background:#ffffffed;padding:10px 12px;border-radius:7px;color:#68746b;font-size:12px}
-.empty{padding:30px;text-align:center;color:var(--muted)}
-footer{max-width:1180px;margin:22px auto 35px;padding:0 22px;color:#7a857d;font-size:12px}
-@media(max-width:760px){.top{align-items:flex-start}.top nav{gap:12px;flex-wrap:wrap;justify-content:flex-end}nav a:not(.navbutton){display:none}.intro{display:block}.demo{display:inline-block;margin-top:13px}.search{grid-template-columns:1fr 1fr}.search button{width:100%}.content{grid-template-columns:1fr}.map{min-height:320px}.intro h1{font-size:26px}}
+:root{--green:#16834b;--dark:#145c38;--pale:#eaf5ee;--ink:#202923;--muted:#68736c;--line:#dce5de}
+*{box-sizing:border-box}body{margin:0;background:#f6f8f6;color:var(--ink);font:15px Arial,Helvetica,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:15px max(20px,calc((100% - 1200px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-size:25px;font-weight:800;color:var(--green);letter-spacing:-1px}.logo span{color:#26352b}nav a{color:#34443a;text-decoration:none;margin-left:22px;font-weight:600}
+.wrap{max-width:1200px;margin:28px auto;padding:0 20px}.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:20px}.hero h1{margin:0 0 7px;font-size:30px}.hero p{margin:0;color:var(--muted)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);padding:14px;border-radius:10px;margin:18px 0}
+input,select,button{font:inherit;border-radius:7px;padding:11px 12px;border:1px solid #cbd7ce;background:#fff;color:var(--ink)}input{min-width:170px;flex:1}select{min-width:125px}button{background:var(--green);color:white;border-color:var(--green);font-weight:700;cursor:pointer}button:hover{background:var(--dark)}button:disabled{opacity:.6;cursor:wait}
+.layout{display:grid;grid-template-columns:minmax(290px,.85fr) minmax(0,1.45fr);gap:16px;align-items:stretch}.panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}.panelhead{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.panelhead h2{font-size:17px;margin:0}.count{color:var(--muted);font-size:13px}
+#map{height:590px;width:100%;background:#e7eee8}.list{max-height:590px;overflow:auto}.listing{padding:16px 17px;border-bottom:1px solid var(--line);cursor:pointer}.listing:hover,.listing.active{background:var(--pale)}.tag{display:inline-block;background:var(--pale);color:var(--dark);font-size:11px;font-weight:700;padding:4px 7px;border-radius:20px;margin-bottom:8px}.listing h3{font-size:16px;margin:0 0 6px}.listing p{margin:4px 0;color:var(--muted);font-size:13px;line-height:1.45}.listing strong{color:#24392c}.note{font-size:12px;color:var(--muted);margin:14px 2px}.status{font-size:13px;color:var(--muted);align-self:center}.leaflet-popup-content{line-height:1.45}.leaflet-popup-content b{color:var(--dark)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.list{max-height:390px}#map{height:420px}.hero{display:block}.hero p{margin-top:7px}nav a{margin-left:10px}header{padding:14px 18px}}
 </style>
 </head>
 <body>
-<header><div class="top">
-<a class="brand" href="index.html">ReRe<span>Net</span></a>
-<nav><a href="#browse">Browse referrals</a><a href="#how">How it works</a><a class="navbutton" href="#post">Post an opportunity</a></nav>
-</div></header>
-<main>
-<section class="intro">
-<div><h1>Find referrals near you</h1><p>A simple place for real estate agents to connect on opportunities beyond their own market.</p></div>
-<div class="demo">Preview site · Sample opportunities only</div>
+<header><div class="logo">ReRe<span>Net</span></div><nav><a href="#browse">Browse referrals</a><a href="#how">How it works</a></nav></header>
+<main class="wrap">
+<section class="hero"><div><h1>Find referrals near you</h1><p>Browse real estate opportunities by ZIP code and distance.</p></div></section>
+<section class="filters" id="browse" aria-label="Referral search">
+<input id="zip" inputmode="numeric" maxlength="5" placeholder="Enter ZIP code (e.g. 11427)" aria-label="ZIP code">
+<select id="radius" aria-label="Search radius"><option value="10">Within 10 miles</option><option value="25" selected>Within 25 miles</option><option value="50">Within 50 miles</option><option value="100">Within 100 miles</option></select>
+<select id="category" aria-label="Category"><option value="all">All opportunities</option><option value="Buyer">Buyer referrals</option><option value="Seller">Seller referrals</option><option value="Tenant">Tenant referrals</option></select>
+<button id="search">Search map</button><span class="status" id="status" role="status">Showing sample opportunities around New York City</span>
 </section>
-<section class="search" id="browse">
-<div><label for="zip">Your ZIP code</label><input id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 11427"></div>
-<div><label for="radius">Search radius</label><select id="radius"><option value="10">10 miles</option><option value="25" selected>25 miles</option><option value="50">50 miles</option><option value="100">100 miles</option></select></div>
-<div><label for="type">Opportunity type</label><select id="type"><option value="all">All opportunities</option><option value="buyer">Buyer referral</option><option value="seller">Seller referral</option><option value="help">Showing / open house help</option></select></div>
-<button class="primary" id="searchBtn">Search</button>
+<section class="layout">
+<div class="panel"><div class="panelhead"><h2>Referral opportunities</h2><span class="count" id="count">4 examples</span></div><div class="list" id="list"></div></div>
+<div class="panel"><div class="panelhead"><h2>Interactive map</h2><span class="count">Select a pin for details</span></div><div id="map" role="application" aria-label="Interactive referral map"></div></div>
 </section>
-<section class="content">
-<div class="panel">
-<div class="panelhead"><h2>Referral opportunities</h2><span class="count" id="count">4 sample listings</span></div>
-<div class="cards" id="cards">
-<article class="item" data-type="buyer" data-zip="11427"><div class="itemtop"><div><div class="kind">Buyer referral</div><h3>Buyer looking in Queens</h3></div><span class="tag">Sample</span></div><p>Pre-approved buyer interested in a single-family home. Agent is looking for a local partner.</p><div class="meta"><span>📍 Queens, NY · 11427</span><span>Arrangement: to be discussed</span></div></article>
-<article class="item" data-type="seller" data-zip="10023"><div class="itemtop"><div><div class="kind">Seller referral</div><h3>Homeowner in Manhattan</h3></div><span class="tag">Sample</span></div><p>Owner considering a sale and needs an agent familiar with the local market.</p><div class="meta"><span>📍 Manhattan, NY · 10023</span><span>Arrangement: to be discussed</span></div></article>
-<article class="item" data-type="help" data-zip="11215"><div class="itemtop"><div><div class="kind">Showing / open house help</div><h3>Showing assistance in Brooklyn</h3></div><span class="tag">Sample</span></div><p>Agent needs local coverage for a scheduled property showing.</p><div class="meta"><span>📍 Brooklyn, NY · 11215</span><span>Arrangement: paid assistance</span></div></article>
-<article class="item" data-type="buyer" data-zip="11530"><div class="itemtop"><div><div class="kind">Buyer referral</div><h3>Buyer searching in Nassau County</h3></div><span class="tag">Sample</span></div><p>Relocating buyer needs help finding a home near Garden City.</p><div class="meta"><span>📍 Garden City, NY · 11530</span><span>Arrangement: to be discussed</span></div></article>
-</div><div class="empty" id="empty" hidden>No sample opportunities match those filters. Try a wider radius or another category.</div>
-</div>
-<div class="panel">
-<div class="panelhead"><h2>Opportunity map</h2><span class="count">Illustrative preview</span></div>
-<div class="map" aria-label="Illustrative map preview with four sample opportunity pins">
-<div class="maplabel">Sample locations · not live map data</div>
-<div class="pin p1"><b>1</b></div><div class="pin p2"><b>2</b></div><div class="pin p3"><b>3</b></div><div class="pin p4"><b>4</b></div>
-<div class="mapnote">This is a visual layout preview. Real map pins and distance calculations will be connected after the listings database is added.</div>
-</div>
-</div>
-</section>
-<section id="how" style="margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px">
-<h2 style="font-size:18px;margin:0 0 8px">How ReReNet works</h2>
-<div style="display:flex;gap:25px;flex-wrap:wrap;color:#5c695f"><span><b>1.</b> Agent posts an opportunity</span><span><b>2.</b> Another agent requests to connect</span><span><b>3.</b> Both agents discuss terms directly</span></div>
-</section>
-<section id="post" style="margin-top:14px;color:#657168;font-size:13px">Posting and agent accounts will be enabled in the next development step. No client names or private contact details should appear in public listings.</section>
+<p class="note">Map data © OpenStreetMap contributors. ZIP search uses OpenStreetMap Nominatim. Listings shown are demonstration examples only, not live referrals.</p>
+<section id="how" class="panel" style="padding:18px;margin-top:16px"><h2 style="margin:0 0 8px">How ReReNet works</h2><p style="margin:0;color:var(--muted)">An agent shares an opportunity. Another agent finds it on the map and requests an introduction. Agents discuss terms and obtain any required brokerage approvals directly.</p></section>
 </main>
-<footer>© ReReNet · A Realtor-to-Realtor connection concept. Sample listings are for design preview only.</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-const zip=document.getElementById('zip'),type=document.getElementById('type'),cards=[...document.querySelectorAll('.item')],empty=document.getElementById('empty'),count=document.getElementById('count');
-function runSearch(){let chosen=type.value,term=zip.value.trim(),shown=0;cards.forEach(card=>{const matchType=chosen==='all'||card.dataset.type===chosen;const matchZip=!term||card.dataset.zip.startsWith(term.slice(0,3));card.hidden=!(matchType&&matchZip);if(!card.hidden)shown++});empty.hidden=shown!==0;count.textContent=shown+' sample listing'+(shown===1?'':'s');}
-document.getElementById('searchBtn').addEventListener('click',runSearch);
-type.addEventListener('change',runSearch);zip.addEventListener('keydown',e=>{if(e.key==='Enter')runSearch()});
+const opportunities=[
+{id:1,type:"Buyer",title:"Buyer looking in Queens",area:"Bayside, NY",zip:"11361",lat:40.7637,lng:-73.7743,detail:"Pre-approved buyer seeking a 2-bedroom home. Introduction requested.",distance:null},
+{id:2,type:"Seller",title:"Potential home seller",area:"Jamaica Estates, NY",zip:"11432",lat:40.7178,lng:-73.7789,detail:"Owner considering listing in the next 30–60 days.",distance:null},
+{id:3,type:"Tenant",title:"Tenant seeking a rental",area:"Forest Hills, NY",zip:"11375",lat:40.7215,lng:-73.8448,detail:"Two-bedroom rental search; move-in next month.",distance:null},
+{id:4,type:"Buyer",title:"Buyer relocating to Nassau",area:"Garden City, NY",zip:"11530",lat:40.7268,lng:-73.6343,detail:"Family seeking a 3-bedroom home in Nassau County.",distance:null}
+];
+const map=L.map('map').setView([40.735,-73.82],10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+let markers=[],shown=[...opportunities],center=null,circle=null;
+const list=document.getElementById('list'),status=document.getElementById('status'),count=document.getElementById('count');
+function miles(a,b){const r=Math.PI/180,dLat=(b.lat-a[0])*r,dLon=(b.lng-a[1])*r,x=Math.sin(dLat/2)**2+Math.cos(a[0]*r)*Math.cos(b.lat*r)*Math.sin(dLon/2)**2;return 3958.8*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function render(){
+ markers.forEach(m=>map.removeLayer(m));markers=[];const cat=document.getElementById('category').value,r=Number(document.getElementById('radius').value);
+ shown=opportunities.filter(o=>(cat==='all'||o.type===cat)&&(!center||o.distance<=r));list.innerHTML='';
+ shown.forEach(o=>{
+ const m=L.marker([o.lat,o.lng]).addTo(map).bindPopup('<b>'+o.title+'</b><br>'+o.area+'<br>'+o.type+' referral<br><small>Example listing</small>');
+ m.on('click',()=>highlight(o.id));markers.push(m);
+ const el=document.createElement('article');el.className='listing';el.id='listing-'+o.id;el.innerHTML='<span class="tag">'+o.type+' referral</span><h3>'+o.title+'</h3><p><strong>'+o.area+'</strong> · ZIP '+o.zip+'</p><p>'+o.detail+'</p>';
+ el.addEventListener('click',()=>{map.setView([o.lat,o.lng],13);m.openPopup();highlight(o.id)});list.appendChild(el);
+ });
+ count.textContent=shown.length+' examples';
+ if(!shown.length)list.innerHTML='<div class="listing">No sample opportunities match these filters. Try a larger radius or another category.</div>';
+}
+function highlight(id){document.querySelectorAll('.listing').forEach(x=>x.classList.remove('active'));const el=document.getElementById('listing-'+id);if(el){el.classList.add('active');el.scrollIntoView({block:'nearest'})}}
+document.getElementById('category').addEventListener('change',render);
+document.getElementById('radius').addEventListener('change',()=>{if(center){opportunities.forEach(o=>o.distance=miles(center,o));render();drawRadius()}});
+function drawRadius(){if(circle)map.removeLayer(circle);if(center)circle=L.circle(center,{radius:Number(document.getElementById('radius').value)*1609.34,color:'#16834b',fillColor:'#16834b',fillOpacity:.06,weight:1}).addTo(map)}
+document.getElementById('search').addEventListener('click',async()=>{
+ const zip=document.getElementById('zip').value.trim(),btn=document.getElementById('search');
+ if(!/^\d{5}$/.test(zip)){status.textContent='Please enter a valid 5-digit ZIP code.';return}
+ btn.disabled=true;status.textContent='Finding ZIP code…';
+ try{
+ const url='https://nominatim.openstreetmap.org/search?postalcode='+encodeURIComponent(zip)+'&country=United%20States&format=jsonv2&limit=1';
+ const res=await fetch(url);if(!res.ok)throw new Error('ZIP search service is temporarily unavailable');
+ const data=await res.json();if(!data.length)throw new Error('ZIP code not found');
+ center=[Number(data[0].lat),Number(data[0].lon)];opportunities.forEach(o=>o.distance=miles(center,o));
+ render();map.setView(center,10);drawRadius();
+ status.textContent='Showing '+shown.length+' sample opportunities within '+document.getElementById('radius').value+' miles of '+zip+'.';
+ }catch(e){status.textContent=e.message+'. Try again later.'}
+ finally{btn.disabled=false}
+});
+render();setTimeout(()=>map.invalidateSize(),250);
 </script>
 </body></html>
