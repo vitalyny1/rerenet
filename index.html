@@ -55,7 +55,7 @@ const $=id=>document.getElementById(id);
 function save(){localStorage.setItem("bse-classified-ads",JSON.stringify(ads));localStorage.setItem("bse-demo-user",JSON.stringify(user))}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function money(n){return n==null?"":Number(n)===0?"Free":"$"+Number(n).toLocaleString("en-US")}
-function priceLabel(a){return a.mode==="Exchange"?"Exchange":a.mode==="Looking to buy"?(a.price==null?"Wanted":"Budget "+priceLabel(a)):(a.price==null?"Price on request":priceLabel(a))}
+function priceLabel(a){return a.mode==="Exchange"?"Exchange":a.mode==="Looking to buy"?(a.price==null?"Wanted":"Budget "+money(a.price)):(a.price==null?"Price on request":money(a.price))}
 $("searchTop").onclick=()=>{page("browse");setTimeout(()=>$("q").focus(),80)};
 function page(n){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===n));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===n));if(n==="myads")renderMyAds();if(n==="browse"&&map)setTimeout(()=>map.invalidateSize(),100);window.scrollTo(0,0)}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(b.dataset.page==="post"&&!user){openAuth();return}page(b.dataset.page)});
