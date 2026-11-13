@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BUYSELLEXCHANGE | Buy. Sell. Exchange.</title>
+<title>FLEAMARKET | Buy. Sell. Exchange.</title>
 <meta name="description" content="A local marketplace to buy, sell, and exchange almost anything.">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
@@ -16,26 +16,26 @@ header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand">BUY<span>SELL</span>EXCHANGE</div><div class="tagline">LOCAL CLASSIFIEDS</div><nav class="nav"><button class="active" data-page="browse">Browse</button><button data-page="post">Post an Ad</button><button data-page="myads">My Ads</button></nav><button class="loginbtn" id="loginOpen">Log In</button><button class="postbtn" id="postOpen">＋ Post</button></div></header>
+<header><div class="top"><div class="brand">FLEA<span>MARKET</span></div><div class="tagline">LOCAL CLASSIFIEDS</div><nav class="nav"><button class="active" data-page="browse" id="searchTop">SEARCH</button><button data-page="post">Post an Ad</button><button data-page="myads">My Ads</button></nav><button class="loginbtn" id="loginOpen">Log In</button><button class="postbtn" id="postOpen">＋ Post</button></div></header>
 <main class="wrap">
 <section class="page active" id="browse">
 <div class="intro"><div><h1>Buy. Sell. Exchange.</h1><p>Local listings from people in your community.</p></div><span class="muted" id="count">Showing sample listings</span></div>
-<div class="search"><input id="q" placeholder="Search for anything..." aria-label="Search listings"><select id="mode"><option value="all">For sale & exchange</option><option value="For sale">For sale</option><option value="Exchange">Exchange</option></select><input id="zip" placeholder="ZIP code" maxlength="5" style="max-width:125px"><button class="primary" id="searchBtn">Search</button></div>
-<div class="tabs"><button class="tab active" data-mode="all">All listings</button><button class="tab" data-mode="For sale">For Sale</button><button class="tab" data-mode="Exchange">Exchange</button></div>
-<div class="maplayout"><section class="panel"><div class="panelhead"><h2>Listings near you</h2><span class="muted" id="listCount"></span></div><div class="results" id="results"></div></section><section class="panel"><div class="panelhead"><h2>Map</h2><span class="muted">Select a pin or listing</span></div><div id="map" aria-label="Map of listings"></div></section></div>
+<div class="search"><input id="q" placeholder="Search for anything..." aria-label="Search listings"><select id="mode"><option value="all">For sale & exchange</option><option value="For sale">For sale</option><option value="Exchange">Exchange</option><option value="Looking to buy">Looking to buy</option></select><input id="zip" placeholder="ZIP code" maxlength="5" style="max-width:125px"><button class="primary" id="searchBtn">Search</button></div>
+<div class="tabs"><button class="tab active" data-mode="all">All listings</button><button class="tab" data-mode="For sale">For Sale</button><button class="tab" data-mode="Exchange">Exchange</button><button class="tab" data-mode="Looking to buy">Looking to Buy</button></div>
+<div class="maplayout"><section class="panel"><div class="panelhead"><h2>Listings near you</h2><span class="muted" id="listCount"></span></div><div class="results" id="results"></div></section><section class="panel"><div class="panelhead"><h2>Map</h2><span class="muted">Select a pin or listing</span></div><div id="map" aria-label="Map of listings"></div></section></div><section class="panel" style="margin-top:12px"><div class="panelhead"><h2>Potential matches</h2><span class="muted">Wanted items matched with items for sale</span></div><div id="matches" style="padding:8px 14px"><div class="empty">Matching listings will appear here.</div></div></section>
 </section>
-<section class="page" id="post"><div class="formpanel"><h2>Post a classified ad</h2><p class="hint">Choose one: For Sale or Exchange.</p><form id="adForm"><div class="fields">
-<div class="field"><label for="adMode">Listing type</label><select id="adMode"><option>For sale</option><option>Exchange</option></select></div>
+<section class="page" id="post"><div class="formpanel"><h2>Post a classified ad</h2><p class="hint">Post an item for sale, offer an exchange, or tell the community what you want to buy.</p><form id="adForm"><div class="fields">
+<div class="field"><label for="adMode">Listing type</label><select id="adMode"><option>For sale</option><option>Exchange</option><option>Looking to buy</option></select></div>
 <div class="field"><label for="adCategory">Category</label><select id="adCategory"><option>General</option><option>Vehicles</option><option>Home & Garden</option><option>Electronics</option><option>Clothing</option><option>Sports & Hobbies</option><option>Services</option><option>Digital</option><option>Other</option></select></div>
 <div class="field full"><label for="adTitle">Title</label><input id="adTitle" maxlength="90" required placeholder="What are you listing?"></div>
 <div class="field full"><label for="adDescription">Description</label><textarea id="adDescription" maxlength="1200" required placeholder="Describe the item or what you want to exchange it for."></textarea></div>
-<div class="field"><label for="adPrice">Price (USD) — for sale</label><input id="adPrice" type="number" min="0" step=".01" placeholder="Price"></div>
+<div class="field"><label for="adPrice">Price or budget (USD)</label><input id="adPrice" type="number" min="0" step=".01" placeholder="Price"></div>
 <div class="field"><label for="adZip">ZIP code</label><input id="adZip" maxlength="5" required placeholder="e.g. 11427"></div>
 <div class="field"><label for="adCity">City / area</label><input id="adCity" required placeholder="City, State"></div>
 <div class="field"><label for="adName">Your display name</label><input id="adName" required maxlength="50" placeholder="Name"></div>
 </div><div class="actions"><button type="button" class="secondary" id="cancelAd">Cancel</button><button class="primary">Publish ad</button></div></form><div class="note">Prototype only: this version saves ads in this browser. A real shared classifieds site needs server-side accounts and a database.</div></div></section>
 <section class="page" id="myads"><div class="panelhead"><h2>My Ads</h2></div><div id="myAdsList" class="results" style="height:auto;min-height:150px"></div></section>
-<div class="footer">BUYSELLEXCHANGE · Community classifieds · Buy, sell, or exchange.</div>
+<div class="footer">FLEAMARKET · Community classifieds · Buy, sell, or exchange.</div>
 </main>
 <div class="modalback" id="loginBack"><div class="modal"><button class="close" id="loginClose">×</button><h2 id="authTitle">Log in</h2><p id="authText">Log in to post an ad and manage your listings.</p><form id="authForm"><div class="field"><label>Email</label><input type="email" id="authEmail" required placeholder="you@example.com"></div><div class="field"><label>Password</label><input type="password" id="authPassword" required minlength="6" placeholder="At least 6 characters"></div><button class="primary" style="width:100%;margin-top:8px" id="authSubmit">Log In</button></form><div class="switch" id="authSwitch">New here? Create an account</div><div class="note">Demo sign-in only. Secure registration, password storage, and account recovery require a backend and are not active yet.</div></div></div>
 <div class="modalback" id="detailBack"><div class="modal"><button class="close" id="detailClose">×</button><span class="kind" id="detailMode"></span><h2 id="detailTitle" style="margin-top:12px"></h2><p id="detailPrice" style="font-size:21px;font-weight:bold;color:#1769aa"></p><p id="detailDescription"></p><p id="detailLocation" class="muted"></p><p id="detailSeller"></p><button class="primary" id="contactSeller">Contact seller</button><div class="note">Contact is a demo interaction in this prototype.</div></div></div>
@@ -54,7 +54,9 @@ let ads=load("bse-classified-ads",demo), user=load("bse-demo-user",null), map,ma
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem("bse-classified-ads",JSON.stringify(ads));localStorage.setItem("bse-demo-user",JSON.stringify(user))}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function money(n){return n==null?"Exchange":Number(n)===0?"Free":"$"+Number(n).toLocaleString("en-US")}
+function money(n){return n==null?"":Number(n)===0?"Free":"$"+Number(n).toLocaleString("en-US")}
+function priceLabel(a){return a.mode==="Exchange"?"Exchange":a.mode==="Looking to buy"?(a.price==null?"Wanted":"Budget "+money(a.price)):(a.price==null?"Price on request":money(a.price))}
+$("searchTop").onclick=()=>{page("browse");setTimeout(()=>$("q").focus(),80)};
 function page(n){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===n));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===n));if(n==="myads")renderMyAds();if(n==="browse"&&map)setTimeout(()=>map.invalidateSize(),100);window.scrollTo(0,0)}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(b.dataset.page==="post"&&!user){openAuth();return}page(b.dataset.page)});
 $("postOpen").onclick=()=>{if(!user){openAuth();return}page("post")};
@@ -66,13 +68,21 @@ function render(){
  const rows=ads.filter(a=>(activeMode==="all"||a.mode===activeMode)&&(mode==="all"||a.mode===mode)&&(!zip||a.zip===zip)&&(!q||(a.title+" "+a.description+" "+a.city+" "+a.category).toLowerCase().includes(q)));
  $("count").textContent=rows.length+" listings";$("listCount").textContent=rows.length+" found";
  $("results").innerHTML=rows.length?rows.map(a=>'<article class="item" data-id="'+a.id+'"><span class="kind '+(a.mode==="Exchange"?"exchange":"")+'">'+esc(a.mode.toUpperCase())+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.description)+'</p><div class="itemfoot"><span>'+esc(a.city)+' · '+esc(a.zip)+'</span><b class="price">'+money(a.price)+'</b></div></article>').join(""):'<div class="empty">No listings found. Try another search.</div>';
+ renderMatches();
  rows.forEach(a=>{if(a.lat&&a.lng){const m=L.marker([a.lat,a.lng]).addTo(map).bindPopup('<b>'+esc(a.title)+'</b><br>'+esc(a.city)+'<br>'+esc(money(a.price)));m.on("click",()=>highlight(a.id));markers.push(m)}});
  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>{const a=rows.find(x=>x.id===Number(el.dataset.id));if(a){map.setView([a.lat,a.lng],13);const m=markers.find(x=>{const p=x.getLatLng();return Math.abs(p.lat-a.lat)<.00001&&Math.abs(p.lng-a.lng)<.00001});if(m)m.openPopup();highlight(a.id);openDetail(a)}});
+}
+function renderMatches(){
+ const wanted=ads.filter(a=>a.mode==="Looking to buy"),supply=ads.filter(a=>a.mode==="For sale"),pairs=[];
+ const words=t=>new Set(String(t||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").split(" ").filter(w=>w.length>2));
+ wanted.forEach(w=>supply.forEach(a=>{const ww=words(w.title+" "+w.description),aa=words(a.title+" "+a.description);let overlap=0;ww.forEach(x=>{if(aa.has(x))overlap++});const sameCategory=w.category&&w.category===a.category,sameZip=w.zip&&w.zip===a.zip;if(overlap>=1||sameCategory)pairs.push({w,a,score:overlap+(sameCategory?2:0)+(sameZip?1:0)})}));
+ pairs.sort((x,y)=>y.score-x.score);
+ $("matches").innerHTML=pairs.length?pairs.slice(0,12).map(p=>'<div class="item"><span class="kind">POTENTIAL MATCH</span><h3>'+esc(p.w.title)+' ↔ '+esc(p.a.title)+'</h3><p>Wanted in '+esc(p.w.city)+' · For sale in '+esc(p.a.city)+'</p><div class="itemfoot"><span>Buyer: '+esc(p.w.seller)+' · Seller: '+esc(p.a.seller)+'</span><b class="price">'+esc(priceLabel(p.a))+'</b></div></div>').join(""):'<div class="empty">No potential matches yet. Matches appear when wanted ads and for-sale ads share keywords or categories.</div>';
 }
 function highlight(id){document.querySelectorAll(".item").forEach(e=>e.classList.toggle("active",Number(e.dataset.id)===id))}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{activeMode=b.dataset.mode;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));$("mode").value=activeMode;render()});
 $("searchBtn").onclick=render;$("q").addEventListener("keydown",e=>{if(e.key==="Enter")render()});$("mode").onchange=()=>{activeMode="all";document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.mode==="all"));render()};
-function openDetail(a){selected=a;$("detailMode").textContent=a.mode;$("detailTitle").textContent=a.title;$("detailPrice").textContent=money(a.price);$("detailDescription").textContent=a.description;$("detailLocation").textContent=a.city+" · ZIP "+a.zip;$("detailSeller").textContent="Posted by "+a.seller;$("detailBack").classList.add("open")}
+function openDetail(a){selected=a;$("detailMode").textContent=a.mode;$("detailTitle").textContent=a.title;$("detailPrice").textContent=priceLabel(a);$("detailDescription").textContent=a.description;$("detailLocation").textContent=a.city+" · ZIP "+a.zip;$("detailSeller").textContent="Posted by "+a.seller;$("detailBack").classList.add("open")}
 $("detailClose").onclick=()=>$("detailBack").classList.remove("open");$("contactSeller").onclick=()=>{if(!user){$("detailBack").classList.remove("open");openAuth();return}alert("Demo: contact feature will be connected to secure messaging.");};
 function openAuth(){$("loginBack").classList.add("open");$("loginTitle");$("authTitle").textContent=user?"Account":"Log in";$("authText").textContent=user?"Signed in as "+user.email:"Log in to post an ad and manage your listings.";$("loginOpen").textContent=user?"Log Out":"Log In"}
 $("loginOpen").onclick=()=>{if(user){user=null;save();$("loginOpen").textContent="Log In";alert("You have logged out.");}else openAuth()};
