@@ -55,7 +55,7 @@ const $=id=>document.getElementById(id);
 function save(){localStorage.setItem("bse-classified-ads",JSON.stringify(ads));localStorage.setItem("bse-demo-user",JSON.stringify(user))}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function money(n){return n==null?"":Number(n)===0?"Free":"$"+Number(n).toLocaleString("en-US")}
-function priceLabel(a){return a.mode==="Exchange"?"Exchange":a.mode==="Looking to buy"?(a.price==null?"Wanted":"Budget "+money(a.price)):(a.price==null?"Price on request":money(a.price))}
+function priceLabel(a){return a.mode==="Exchange"?"Exchange":a.mode==="Looking to buy"?(a.price==null?"Wanted":"Budget "+priceLabel(a)):(a.price==null?"Price on request":priceLabel(a))}
 $("searchTop").onclick=()=>{page("browse");setTimeout(()=>$("q").focus(),80)};
 function page(n){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===n));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===n));if(n==="myads")renderMyAds();if(n==="browse"&&map)setTimeout(()=>map.invalidateSize(),100);window.scrollTo(0,0)}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(b.dataset.page==="post"&&!user){openAuth();return}page(b.dataset.page)});
@@ -67,9 +67,9 @@ function render(){
  const q=$("q").value.trim().toLowerCase(),mode=$("mode").value,zip=$("zip").value.trim();
  const rows=ads.filter(a=>(activeMode==="all"||a.mode===activeMode)&&(mode==="all"||a.mode===mode)&&(!zip||a.zip===zip)&&(!q||(a.title+" "+a.description+" "+a.city+" "+a.category).toLowerCase().includes(q)));
  $("count").textContent=rows.length+" listings";$("listCount").textContent=rows.length+" found";
- $("results").innerHTML=rows.length?rows.map(a=>'<article class="item" data-id="'+a.id+'"><span class="kind '+(a.mode==="Exchange"?"exchange":"")+'">'+esc(a.mode.toUpperCase())+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.description)+'</p><div class="itemfoot"><span>'+esc(a.city)+' · '+esc(a.zip)+'</span><b class="price">'+money(a.price)+'</b></div></article>').join(""):'<div class="empty">No listings found. Try another search.</div>';
+ $("results").innerHTML=rows.length?rows.map(a=>'<article class="item" data-id="'+a.id+'"><span class="kind '+(a.mode==="Exchange"?"exchange":"")+'">'+esc(a.mode.toUpperCase())+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.description)+'</p><div class="itemfoot"><span>'+esc(a.city)+' · '+esc(a.zip)+'</span><b class="price">'+priceLabel(a)+'</b></div></article>').join(""):'<div class="empty">No listings found. Try another search.</div>';
  renderMatches();
- rows.forEach(a=>{if(a.lat&&a.lng){const m=L.marker([a.lat,a.lng]).addTo(map).bindPopup('<b>'+esc(a.title)+'</b><br>'+esc(a.city)+'<br>'+esc(money(a.price)));m.on("click",()=>highlight(a.id));markers.push(m)}});
+ rows.forEach(a=>{if(a.lat&&a.lng){const m=L.marker([a.lat,a.lng]).addTo(map).bindPopup('<b>'+esc(a.title)+'</b><br>'+esc(a.city)+'<br>'+esc(priceLabel(a)));m.on("click",()=>highlight(a.id));markers.push(m)}});
  document.querySelectorAll(".item").forEach(el=>el.onclick=()=>{const a=rows.find(x=>x.id===Number(el.dataset.id));if(a){map.setView([a.lat,a.lng],13);const m=markers.find(x=>{const p=x.getLatLng();return Math.abs(p.lat-a.lat)<.00001&&Math.abs(p.lng-a.lng)<.00001});if(m)m.openPopup();highlight(a.id);openDetail(a)}});
 }
 function renderMatches(){
@@ -90,7 +90,7 @@ $("loginClose").onclick=()=>$("loginBack").classList.remove("open");
 $("authSwitch").onclick=()=>{signup=!signup;$("authTitle").textContent=signup?"Create account":"Log in";$("authSubmit").textContent=signup?"Create Account":"Log In";$("authSwitch").textContent=signup?"Already registered? Log in":"New here? Create an account"};
 $("authForm").onsubmit=e=>{e.preventDefault();user={email:$("authEmail").value.trim()};save();$("loginBack").classList.remove("open");$("loginOpen").textContent="Log Out";alert("Demo session started. Real account authentication is not connected yet.");};
 $("adForm").onsubmit=e=>{e.preventDefault();if(!user){openAuth();return}const mode=$("adMode").value,zip=$("adZip").value.trim();if(!/^\d{5}$/.test(zip)){alert("Please enter a 5-digit ZIP code.");return}const city=$("adCity").value.trim();const a={id:Date.now(),mode,category:$("adCategory").value,title:$("adTitle").value.trim(),description:$("adDescription").value.trim(),price:mode==="Exchange"?null:($("adPrice").value===""?null:Number($("adPrice").value)),zip,city,seller:user.email,lat:null,lng:null,icon:"📌"};ads.unshift(a);save();e.target.reset();alert("Your ad was saved in this browser. Map location is pending ZIP geocoding.");page("browse");render()};
-function renderMyAds(){const mine=ads.filter(a=>user&&a.seller===user.email);$("myAdsList").innerHTML=!user?'<div class="empty">Please log in to view your ads.</div>':mine.length?mine.map(a=>'<div class="item"><span class="kind">'+esc(a.mode)+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.city)+' · '+esc(money(a.price))+'</p></div>').join(""):'<div class="empty">You have not posted any ads yet.</div>'}
+function renderMyAds(){const mine=ads.filter(a=>user&&a.seller===user.email);$("myAdsList").innerHTML=!user?'<div class="empty">Please log in to view your ads.</div>':mine.length?mine.map(a=>'<div class="item"><span class="kind">'+esc(a.mode)+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.city)+' · '+esc(priceLabel(a))+'</p></div>').join(""):'<div class="empty">You have not posted any ads yet.</div>'}
 if(user)$("loginOpen").textContent="Log Out";
 initMap();setTimeout(()=>map.invalidateSize(),250);
 </script>
